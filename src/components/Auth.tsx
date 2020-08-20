@@ -6,7 +6,7 @@ export const Auth: React.FC = () => {
   const state = useAppState().auth;
   const actions = useActions().auth;
 
-  if (state.state === "UNAUTHENTICATED") {
+  if (state.matches("UNAUTHENTICATED")) {
     return (
       <ScreenContainer>
         <div>

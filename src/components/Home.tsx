@@ -18,7 +18,7 @@ export const Home: React.FC = () => {
 
   return (
     <ScreenContainer>
-      <div>Hello world, I am home!</div>
+      <div>Hello world!</div>
       <AddBacklogItemButton
         onClick={() => {
           actions.openScreen("ADD_BACKLOG_ITEM");

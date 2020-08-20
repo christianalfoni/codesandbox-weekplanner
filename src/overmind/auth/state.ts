@@ -21,13 +21,17 @@ type State =
       state: "AUTHENTICATED";
       user: User;
       profile: Profile;
+    }
+  | {
+      state: "INVALID_ENV";
     };
 
 export const state = statemachine<State>(
   {
-    AUTHENTICATING: ["UNAUTHENTICATED", "AUTHENTICATED"],
+    AUTHENTICATING: ["UNAUTHENTICATED", "AUTHENTICATED", "INVALID_ENV"],
     AUTHENTICATED: ["UNAUTHENTICATED"],
-    UNAUTHENTICATED: ["AUTHENTICATING"]
+    UNAUTHENTICATED: ["AUTHENTICATING"],
+    INVALID_ENV: []
   },
   {
     state: "AUTHENTICATING"

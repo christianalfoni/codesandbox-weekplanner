@@ -8,7 +8,7 @@ export const onAuthChanged: AsyncAction<User | null> = async (
   if (user) {
     try {
       const profile = await effects.api.getProfile(user);
-      const authenticatedState = state.auth.transition("AUTHENTICATED")
+      const authenticatedState = state.auth.transition("AUTHENTICATED");
       if (authenticatedState) {
         authenticatedState.user = user;
         authenticatedState.profile = profile;
@@ -21,6 +21,8 @@ export const onAuthChanged: AsyncAction<User | null> = async (
         effects.api.disposeStreamBacklog();
       }
     }
+  } else if (effects.browser.isIframe()) {
+    state.auth.transition("INVALID_ENV");
   } else {
     if (state.auth.transition("UNAUTHENTICATED")) {
       effects.api.disposeStreamBacklog();

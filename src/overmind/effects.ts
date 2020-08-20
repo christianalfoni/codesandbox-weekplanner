@@ -2,6 +2,10 @@ import { User } from "firebase";
 import { BacklogItems, BacklogItem, WeekDays } from "./state";
 import { Profile } from "./auth/state";
 
+export const browser = {
+  isIframe: () => window.self !== window.top
+};
+
 export const api = (() => {
   let firebase: typeof import("firebase");
   let app;

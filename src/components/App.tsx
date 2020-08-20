@@ -13,6 +13,13 @@ export default function App() {
 
   if (state.auth.matches("AUTHENTICATING")) {
     page = <ScreenContainer>Loading...</ScreenContainer>;
+  } else if (state.auth.matches("INVALID_ENV")) {
+    return (
+      <ScreenContainer>
+        You can not authenticate when the app is running in an iFrame, please
+        open the app in a tab and then refresh the iframe
+      </ScreenContainer>
+    );
   } else if (state.auth.matches("UNAUTHENTICATED")) {
     page = <Auth />;
   } else if (state.matches("HOME")) {
