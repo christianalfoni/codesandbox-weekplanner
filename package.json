@@ -1,7 +1,7 @@
 {
-  "name": "weekplanner",
+  "name": "weekplanner-devbranch",
   "version": "1.0.0",
-  "description": "My app!\n\n[Open mockup](https://excalidraw.com/#json=4924038950420480,vMqnF-ZTEXyZXsAHmrfd7g)",
+  "description": "",
   "keywords": [],
   "main": "src/index.tsx",
   "dependencies": {

@@ -1,5 +1,5 @@
 import { User } from "firebase";
-import { BacklogItems, BacklogItem, WeekDays } from "./state";
+import { BacklogItems, BacklogItem } from "./state";
 import { Profile } from "./auth/state";
 
 export const browser = {
@@ -38,22 +38,32 @@ export const api = (() => {
       const provider = new firebase.auth.GoogleAuthProvider();
       firebase.auth().signInWithRedirect(provider);
     },
+    signOut: () => {
+      firebase.auth().signOut();
+    },
     async getProfile(user: User): Promise<Profile> {
       const doc = await firebase
         .firestore()
         .collection("profiles")
         .doc(user.uid)
         .get();
-      const data = doc.data();
+      let data = doc.data();
 
-      if (data) {
-        return {
-          ...data,
-          uid: user.uid
-        } as Profile;
+      if (!data) {
+        data = {
+          name: user.displayName
+        };
+        await firebase
+          .firestore()
+          .collection("profiles")
+          .doc(user.uid)
+          .set(data);
       }
 
-      throw new Error("Missing profile");
+      return {
+        ...data,
+        uid: user.uid
+      } as Profile;
     },
     streamBacklog(
       profile: Profile,

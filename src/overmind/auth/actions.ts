@@ -5,6 +5,10 @@ export const onAuthChanged: AsyncAction<User | null> = async (
   { state, effects, actions },
   user
 ) => {
+  if (state.auth.matches("UNAUTHENTICATED")) {
+    state.auth.error = null;
+  }
+
   if (user) {
     try {
       const profile = await effects.api.getProfile(user);
@@ -17,8 +21,10 @@ export const onAuthChanged: AsyncAction<User | null> = async (
         }
       }
     } catch (error) {
-      if (state.auth.transition("UNAUTHENTICATED")) {
+      const unauthenticatedState = state.auth.transition("UNAUTHENTICATED");
+      if (unauthenticatedState) {
         effects.api.disposeStreamBacklog();
+        unauthenticatedState.error = error.message;
       }
     }
   } else if (effects.browser.isIframe()) {
@@ -34,4 +40,8 @@ export const signIn: Action = ({ state, effects }) => {
   if (state.auth.transition("AUTHENTICATING")) {
     effects.api.signIn();
   }
+};
+
+export const signOut: Action = ({ effects }) => {
+  effects.api.signOut();
 };
