@@ -1,4 +1,4 @@
-import { statemachine } from "overmind";
+import { statemachine, derived } from "overmind";
 
 export type WeekDays = {
   0: string[];
@@ -10,17 +10,36 @@ export type WeekDays = {
   6: string[];
 };
 
+export type Days = {
+  [date: string]: {
+    [uid: string]: {
+      [backlogItemId: string]: true;
+    };
+  };
+};
+
 export type BacklogItem = {
   id: string;
   created: number;
   date: number | null;
   description: string;
+  days: {
+    [uid: string]: string[];
+  };
+};
+
+export type DaysByBacklogItem = {
+  [backlogItemId: string]: {
+    [uid: string]: string[];
+  };
 };
 
 export type BacklogItems = { [uid: string]: BacklogItem };
 
 type BaseState = {
   backlog: BacklogItems;
+  days: DaysByBacklogItem;
+  backlogList: BacklogItem[];
   notification: string | null;
 };
 
@@ -62,6 +81,10 @@ export const state = statemachine<State>(
   {
     state: "INITIALIZING",
     backlog: {},
-    notification: null
+    days: {},
+    notification: null,
+    backlogList: derived((state: State) => {
+      return Object.values(state.backlog);
+    })
   }
 );

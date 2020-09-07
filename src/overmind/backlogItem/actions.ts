@@ -65,11 +65,14 @@ export const addBacklogItem: AsyncAction = async ({
   ) {
     const profile = state.auth.profile;
     const currentDescription = backlogItemState.description;
+
     const addingState = backlogItemState.transition("ADDING");
     if (addingState) {
+      addingState.description = "";
+
       try {
         const doc = effects.api.createBacklogItem(profile);
-        const addBacklogItemPromise = effects.api.addBacklogItem(doc, {
+        await effects.api.addBacklogItem(doc, {
           description: addingState.description,
           ...(addingState.currentSelection === CurrentSelection.DATE
             ? {
@@ -77,7 +80,7 @@ export const addBacklogItem: AsyncAction = async ({
               }
             : {})
         });
-        const toggleWeekdaysPromise = Promise.all(
+        await Promise.all(
           addingState.activeWeekdays.map((weekDay) =>
             effects.api.setBacklogItemOnWeekDay(
               profile,
@@ -86,10 +89,6 @@ export const addBacklogItem: AsyncAction = async ({
             )
           )
         );
-
-        addingState.description = "";
-
-        await Promise.all([addBacklogItemPromise, toggleWeekdaysPromise]);
 
         const invalidState = addingState.transition("INVALID");
         if (invalidState) {

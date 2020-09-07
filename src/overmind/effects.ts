@@ -1,6 +1,7 @@
 import { User } from "firebase";
-import { BacklogItems, BacklogItem } from "./state";
+import { BacklogItems, BacklogItem, Days, DaysByBacklogItem } from "./state";
 import { Profile } from "./auth/state";
+import { getFirstDayOfLastWeek } from "./utils";
 
 export const browser = {
   isIframe: () => window.self !== window.top
@@ -9,7 +10,8 @@ export const browser = {
 export const api = (() => {
   let firebase: typeof import("firebase");
   let app;
-  let disposeStreambacklog: () => void;
+  let disposeStreamBacklog: () => void;
+  let disposeStreamWeekDays: () => void;
 
   function getDoc(profile: Profile) {
     return firebase
@@ -69,8 +71,11 @@ export const api = (() => {
       profile: Profile,
       action: (backlogItems: BacklogItems) => void
     ) {
-      this.disposeStreamBacklog();
-      disposeStreambacklog = getDoc(profile)
+      if (disposeStreamBacklog) {
+        disposeStreamBacklog();
+      }
+
+      disposeStreamBacklog = getDoc(profile)
         .collection("backlog")
         .onSnapshot((snapshot) => {
           const docs: BacklogItems = {};
@@ -83,9 +88,45 @@ export const api = (() => {
           action(docs);
         });
     },
+    streamWeekDays(profile: Profile, action: (days: Days) => void) {
+      if (disposeStreamWeekDays) {
+        disposeStreamWeekDays();
+      }
+
+      disposeStreamWeekDays = getDoc(profile)
+        .collection("weekDays")
+        .where(
+          firebase.firestore.FieldPath.documentId(),
+          ">=",
+          getFirstDayOfLastWeek()
+        )
+        .onSnapshot((snapshot) => {
+          const docs: DaysByBacklogItem = {};
+          snapshot.docs.forEach((day) => {
+            const doc = day.data() as {
+              [uid: string]: { [backlogItemId: string]: true };
+            };
+
+            Object.keys(doc).forEach((uid) => {
+              Object.keys(doc[uid]).forEach((backlogItemId) => {
+                if (!docs[backlogItemId]) {
+                  docs[backlogItemId] = {};
+                }
+                if (!docs[backlogItemId][uid]) {
+                  docs[backlogItemId][uid] = [];
+                }
+
+                docs[backlogItemId][uid].push(day.id);
+              });
+            });
+          });
+
+          action(docs);
+        });
+    },
     disposeStreamBacklog() {
-      if (disposeStreambacklog) {
-        disposeStreambacklog();
+      if (disposeStreamWeekDays) {
+        disposeStreamWeekDays();
       }
     },
     createBacklogItem(profile: Profile) {

@@ -18,6 +18,7 @@ export const onAuthChanged: AsyncAction<User | null> = async (
         authenticatedState.profile = profile;
         if (state.transition("HOME")) {
           effects.api.streamBacklog(profile, actions.onBacklogUpdate);
+          effects.api.streamWeekDays(profile, actions.onWeekDaysUpdate);
         }
       }
     } catch (error) {

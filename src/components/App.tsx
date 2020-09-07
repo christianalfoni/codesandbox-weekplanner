@@ -5,6 +5,7 @@ import { Notification } from "../ui-components/Notification";
 import { AddBacklogItem } from "./AddBacklogItem";
 import { Auth } from "./Auth";
 import { Home } from "./Home";
+import { EditCurrentWeek } from "./EditCurrentWeek";
 
 export default function App() {
   const state = useAppState();
@@ -26,6 +27,8 @@ export default function App() {
     page = <Home />;
   } else if (state.matches("ADD_BACKLOG_ITEM")) {
     page = <AddBacklogItem />;
+  } else if (state.matches("EDIT_CURRENT_WEEK")) {
+    page = <EditCurrentWeek />;
   } else {
     page = <span>"Invalid page"</span>;
   }

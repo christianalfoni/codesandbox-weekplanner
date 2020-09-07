@@ -52,7 +52,11 @@ export const Home: React.FC = () => {
     <ScreenContainer>
       <Content>
         <Logout onClick={() => actions.auth.signOut()}>Log out</Logout>
-        <ContentRow>
+        <ContentRow
+          onClick={() => {
+            actions.openScreen("EDIT_CURRENT_WEEK");
+          }}
+        >
           <ContentCell>
             <CalendarIcon />
           </ContentCell>
