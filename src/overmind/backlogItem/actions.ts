@@ -68,8 +68,6 @@ export const addBacklogItem: AsyncAction = async ({
 
     const addingState = backlogItemState.transition("ADDING");
     if (addingState) {
-      addingState.description = "";
-
       try {
         const doc = effects.api.createBacklogItem(profile);
         await effects.api.addBacklogItem(doc, {
@@ -89,6 +87,8 @@ export const addBacklogItem: AsyncAction = async ({
             )
           )
         );
+
+        addingState.description = "";
 
         const invalidState = addingState.transition("INVALID");
         if (invalidState) {

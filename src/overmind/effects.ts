@@ -1,7 +1,7 @@
 import { User } from "firebase";
-import { BacklogItems, BacklogItem, Days, DaysByBacklogItem } from "./state";
+import { BacklogItems, BacklogItem, DaysByBacklogItem } from "./state";
 import { Profile } from "./auth/state";
-import { getFirstDayOfLastWeek } from "./utils";
+import { getFirstDayOfPreviousWeek } from "./utils";
 
 export const browser = {
   isIframe: () => window.self !== window.top
@@ -88,7 +88,10 @@ export const api = (() => {
           action(docs);
         });
     },
-    streamWeekDays(profile: Profile, action: (days: Days) => void) {
+    streamWeekDays(
+      profile: Profile,
+      action: (days: DaysByBacklogItem) => void
+    ) {
       if (disposeStreamWeekDays) {
         disposeStreamWeekDays();
       }
@@ -98,7 +101,7 @@ export const api = (() => {
         .where(
           firebase.firestore.FieldPath.documentId(),
           ">=",
-          getFirstDayOfLastWeek()
+          getFirstDayOfPreviousWeek()
         )
         .onSnapshot((snapshot) => {
           const docs: DaysByBacklogItem = {};
