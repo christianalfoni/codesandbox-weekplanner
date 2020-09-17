@@ -1,4 +1,9 @@
 import { statemachine, derived } from "overmind";
+import {
+  getDaysOfNextWeek,
+  getDaysOfCurrentWeek,
+  getDaysOfPreviousWeek
+} from "./utils";
 
 export type WeekDays = {
   0: string[];
@@ -41,26 +46,29 @@ type BaseState = {
   days: DaysByBacklogItem;
   backlogList: BacklogItem[];
   notification: string | null;
+  previousWeekDays: string[];
+  currentWeekDays: string[];
+  nextWeekDays: string[];
 };
 
 type State =
-  | ({
+  | {
       state: "INITIALIZING";
-    } & BaseState)
-  | ({
+    }
+  | {
       state: "HOME";
-    } & BaseState)
-  | ({
+    }
+  | {
       state: "ADD_BACKLOG_ITEM";
-    } & BaseState)
-  | ({
+    }
+  | {
       state: "PLAN_NEXT_WEEK";
-    } & BaseState)
-  | ({
+    }
+  | {
       state: "EDIT_CURRENT_WEEK";
-    } & BaseState);
+    };
 
-export const state = statemachine<State>(
+export const state = statemachine<State, BaseState>(
   {
     INITIALIZING: [
       "HOME",
@@ -79,12 +87,17 @@ export const state = statemachine<State>(
     EDIT_CURRENT_WEEK: ["INITIALIZING", "HOME"]
   },
   {
-    state: "INITIALIZING",
+    state: "INITIALIZING"
+  },
+  {
     backlog: {},
     days: {},
     notification: null,
-    backlogList: derived((state: State) => {
+    backlogList: derived((state: BaseState) => {
       return Object.values(state.backlog);
-    })
+    }),
+    previousWeekDays: getDaysOfPreviousWeek(),
+    currentWeekDays: getDaysOfCurrentWeek(),
+    nextWeekDays: getDaysOfNextWeek()
   }
 );

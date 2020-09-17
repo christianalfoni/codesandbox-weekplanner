@@ -1,11 +1,9 @@
 import { Action, AsyncAction } from "overmind";
-import { BacklogItems, Days, DaysByBacklogItem } from "./state";
+import { BacklogItems, DaysByBacklogItem } from "./state";
 
 export const openScreen: Action<
   "HOME" | "ADD_BACKLOG_ITEM" | "EDIT_CURRENT_WEEK"
-> = ({ state }, screen) => {
-  state.transition(screen);
-};
+> = ({ state }, screen) => state.transition(screen, {});
 
 export const showNotification: AsyncAction<string> = async (
   { state },
@@ -21,10 +19,12 @@ export const onBacklogUpdate: Action<BacklogItems> = (
   backlogItems
 ) => {
   if (
-    state.matches("HOME") ||
-    state.matches("ADD_BACKLOG_ITEM") ||
-    state.matches("EDIT_CURRENT_WEEK") ||
-    state.matches("PLAN_NEXT_WEEK")
+    state.matches(
+      "HOME",
+      "ADD_BACKLOG_ITEM",
+      "EDIT_CURRENT_WEEK",
+      "PLAN_NEXT_WEEK"
+    )
   ) {
     Object.assign(state.backlog, backlogItems);
   }
@@ -35,11 +35,24 @@ export const onWeekDaysUpdate: Action<DaysByBacklogItem> = (
   days
 ) => {
   if (
-    state.matches("HOME") ||
-    state.matches("ADD_BACKLOG_ITEM") ||
-    state.matches("EDIT_CURRENT_WEEK") ||
-    state.matches("PLAN_NEXT_WEEK")
+    state.matches(
+      "HOME",
+      "ADD_BACKLOG_ITEM",
+      "EDIT_CURRENT_WEEK",
+      "PLAN_NEXT_WEEK"
+    )
   ) {
     Object.assign(state.days, days);
+  }
+};
+
+export const toggleBacklogItemWeekDay: Action<{
+  date: string;
+  backlogItemId: string;
+}> = ({ state, effects }, { date, backlogItemId }) => {
+  if (state.auth.matches("AUTHENTICATED")) {
+    const profile = state.auth.profile;
+
+    effects.api.setBacklogItemOnWeekDay(profile, date, backlogItemId);
   }
 };

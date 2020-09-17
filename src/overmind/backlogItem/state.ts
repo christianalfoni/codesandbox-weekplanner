@@ -16,20 +16,19 @@ type BaseState = {
 type State =
   | {
       state: "VALID";
-    } & BaseState
+    }
   | {
       state: "INVALID";
-    } & BaseState
+    }
   | {
       state: "ERROR";
       error: string;
-    } & BaseState
+    }
   | {
       state: "ADDING";
-      error: string;
-    } & BaseState;
+    };
 
-export const state = statemachine<State>(
+export const state = statemachine<State, BaseState>(
   {
     INVALID: ["VALID"],
     VALID: ["INVALID", "ADDING", "VALID"],
@@ -37,7 +36,9 @@ export const state = statemachine<State>(
     ADDING: ["INVALID", "ERROR"]
   },
   {
-    state: "INVALID",
+    state: "INVALID"
+  },
+  {
     currentSelection: CurrentSelection.NO_DUE_DATE,
     description: "",
     activeWeekdays: [],

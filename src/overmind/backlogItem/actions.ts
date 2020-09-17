@@ -8,18 +8,14 @@ export const changeDescription: Action<string> = ({ state }, description) => {
   }
 
   if (description) {
-    state.backlogItem.transition("VALID");
+    return state.backlogItem.transition("VALID", {});
   } else {
-    state.backlogItem.transition("INVALID");
+    return state.backlogItem.transition("INVALID", {});
   }
 };
 
 export const toggleActiveWeekday: Action<number> = ({ state }, weekday) => {
-  if (
-    state.backlogItem.matches("ERROR") ||
-    state.backlogItem.matches("INVALID") ||
-    state.backlogItem.matches("VALID")
-  ) {
+  if (state.backlogItem.matches("ERROR", "INVALID", "VALID")) {
     const activeWeekdays = state.backlogItem.activeWeekdays;
     if (activeWeekdays.includes(weekday)) {
       activeWeekdays.splice(activeWeekdays.indexOf(weekday), 1);
@@ -30,11 +26,7 @@ export const toggleActiveWeekday: Action<number> = ({ state }, weekday) => {
 };
 
 export const setDate: Action<number> = ({ state }, date) => {
-  if (
-    state.backlogItem.matches("ERROR") ||
-    state.backlogItem.matches("INVALID") ||
-    state.backlogItem.matches("VALID")
-  ) {
+  if (state.backlogItem.matches("ERROR", "INVALID", "VALID")) {
     state.backlogItem.date = date;
   }
 };
@@ -43,11 +35,7 @@ export const setSelection: Action<CurrentSelection> = (
   { state },
   selection
 ) => {
-  if (
-    state.backlogItem.matches("ERROR") ||
-    state.backlogItem.matches("INVALID") ||
-    state.backlogItem.matches("VALID")
-  ) {
+  if (state.backlogItem.matches("ERROR", "INVALID", "VALID")) {
     state.backlogItem.currentSelection = selection;
   }
 };
@@ -58,16 +46,16 @@ export const addBacklogItem: AsyncAction = async ({
   actions
 }) => {
   const backlogItemState = state.backlogItem;
+
   if (
     state.matches("ADD_BACKLOG_ITEM") &&
     state.auth.matches("AUTHENTICATED") &&
-    (backlogItemState.matches("VALID") || backlogItemState.matches("ERROR"))
+    backlogItemState.matches("VALID", "ERROR")
   ) {
     const profile = state.auth.profile;
-    const currentDescription = backlogItemState.description;
+    const currentDescription = state.backlogItem.description;
 
-    const addingState = backlogItemState.transition("ADDING");
-    if (addingState) {
+    return state.backlogItem.transition("ADDING", {}, async (addingState) => {
       try {
         const doc = effects.api.createBacklogItem(profile);
         await effects.api.addBacklogItem(doc, {
@@ -90,22 +78,23 @@ export const addBacklogItem: AsyncAction = async ({
 
         addingState.description = "";
 
-        const invalidState = addingState.transition("INVALID");
-        if (invalidState) {
-          invalidState.activeWeekdays = [];
-          invalidState.currentSelection = CurrentSelection.NO_DUE_DATE;
-
-          actions.showNotification("Backlog item added!");
-          state.transition("HOME");
-        }
+        return addingState.transition(
+          "INVALID",
+          {
+            activeWeekdays: [],
+            currentSelection: CurrentSelection.NO_DUE_DATE
+          },
+          () => {
+            actions.showNotification("Backlog item added!");
+            return state.transition("HOME", {});
+          }
+        );
       } catch (error) {
-        console.log(error.message);
-        const errorState = addingState.transition("ERROR");
-        if (errorState) {
-          errorState.description = currentDescription;
-          errorState.error = error.message;
-        }
+        return addingState.transition("ERROR", {
+          error: error.message,
+          description: currentDescription
+        });
       }
-    }
+    });
   }
 };

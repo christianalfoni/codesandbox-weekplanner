@@ -34,7 +34,12 @@ export const EditCurrentWeek: React.FC = () => {
       </BackButton>
       <List>
         {state.backlogList.map((backlogItem) => (
-          <BacklogItem key={backlogItem.id} id={backlogItem.id} />
+          <BacklogItem
+            key={backlogItem.id}
+            id={backlogItem.id}
+            currentWeekDates={state.currentWeekDays}
+            previousWeekDates={state.previousWeekDays}
+          />
         ))}
       </List>
     </Container>

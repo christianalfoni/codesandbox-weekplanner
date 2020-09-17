@@ -5,7 +5,8 @@ export const { css, styled } = createStyled({
     colors: {
       main: "tomato",
       white: "#EAEAEA",
-      black: "#333"
+      black: "#333",
+      gray: "#EAEAEA"
     },
     space: {
       0: "0",
@@ -33,9 +34,14 @@ export const { css, styled } = createStyled({
       0: "0",
       1: "2px",
       2: "3px"
+    },
+    fontSizes: {
+      0: "10px",
+      1: "12px",
+      2: "16px"
     }
   },
   screens: {
-    MOBILE: rule => `@media (max-width: 700px) {${rule}}`
+    MOBILE: (rule) => `@media (max-width: 700px) {${rule}}`
   }
 });
