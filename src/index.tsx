@@ -7,7 +7,8 @@ import { Provider } from "overmind-react";
 import App from "./components/App";
 
 const overmind = createOvermind(config, {
-  devtools: "localhost:3031"
+  devtools: "localhost:3031",
+  strict: true
 });
 
 const rootElement = document.getElementById("root");

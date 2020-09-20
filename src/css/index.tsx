@@ -1,6 +1,9 @@
+import * as React from "react";
 import { createStyled } from "@stitches/styled";
 
-export const { css, styled } = createStyled({
+/* CONSUMER */
+
+const config = {
   tokens: {
     colors: {
       main: "tomato",
@@ -42,6 +45,10 @@ export const { css, styled } = createStyled({
     }
   },
   screens: {
-    MOBILE: (rule) => `@media (max-width: 700px) {${rule}}`
+    MOBILE: (rule: string) => `@media (max-width: 700px) {${rule}}`
   }
-});
+};
+
+const { styled } = createStyled(config);
+
+export { styled };
