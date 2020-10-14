@@ -76,7 +76,7 @@ export const Home: React.FC = () => {
           </ContentCell>
         </ContentRow>
         <ContentRow>
-          <ContentCell>BLIP</ContentCell>
+          <ContentCell></ContentCell>
         </ContentRow>
       </Content>
       <AddBacklogItemButton
