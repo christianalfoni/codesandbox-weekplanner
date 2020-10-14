@@ -4,9 +4,10 @@ import { styled } from "../css";
 import { FloatingButton } from "../ui-components/FloatingButton";
 import { ScreenContainer } from "../ui-components/ScreenContainer";
 import { FaArrowLeft } from "react-icons/fa";
-import { CurrentSelection } from "../overmind/backlogItem/state";
+import { CurrentSelection } from "../overmind/machines/addBacklogItem";
 import { WeekdayPicker } from "../ui-components/WeekdayPicker";
 import { Calendar } from "../ui-components/Calendar";
+import { stringToColor } from "../overmind/utils";
 
 const BackButton = styled(FloatingButton, {
   top: "1rem",
@@ -62,84 +63,92 @@ const SelectionButton = styled.input({
 });
 
 export const AddBacklogItem: React.FC = () => {
-  const state = useAppState().backlogItem;
+  const rootState = useAppState();
   const actions = useActions();
-  const canAddItem = Boolean(state.description);
 
-  return (
-    <ScreenContainer>
-      <BackButton
-        onClick={() => {
-          actions.openScreen("HOME");
-        }}
-      >
-        <FaArrowLeft />
-      </BackButton>
-      <AddButton
-        disabled={!canAddItem}
-        variant={!canAddItem && "muted"}
-        onClick={() => actions.backlogItem.addBacklogItem()}
-      >
-        Add
-      </AddButton>
-      <Content>
-        <TextArea
-          disabled={state.matches("ADDING")}
-          value={state.description}
-          onChange={(event) =>
-            actions.backlogItem.changeDescription(event.target.value)
-          }
-        />
-        <SelectionContainer
+  if (
+    rootState.current === "AUTHENTICATED" &&
+    rootState.app.current === "ADD_BACKLOG_ITEM"
+  ) {
+    const state = rootState.app.addBacklogItem;
+    const canAddItem = Boolean(state.description);
+
+    return (
+      <ScreenContainer>
+        <BackButton
           onClick={() => {
-            actions.backlogItem.setSelection(CurrentSelection.NO_DUE_DATE);
+            actions.openHome();
           }}
         >
-          <SelectionButton
-            disabled={state.matches("ADDING")}
-            type="radio"
-            readOnly
-            checked={state.currentSelection === CurrentSelection.NO_DUE_DATE}
-          />
-          No due date
-        </SelectionContainer>
-        <SelectionContainer
-          onClick={() => {
-            actions.backlogItem.setSelection(CurrentSelection.WEEKDAYS);
-          }}
+          <FaArrowLeft />
+        </BackButton>
+        <AddButton
+          disabled={!canAddItem}
+          variant={!canAddItem && "muted"}
+          onClick={() => actions.addBacklogItem()}
         >
-          <SelectionButton
-            disabled={state.matches("ADDING")}
-            type="radio"
-            readOnly
-            checked={state.currentSelection === CurrentSelection.WEEKDAYS}
+          Add
+        </AddButton>
+        <Content>
+          <TextArea
+            disabled={state.current === "ADDING"}
+            value={state.description}
+            onChange={(event) => actions.changeDescription(event.target.value)}
           />
-          <UserWeekdays>
-            <WeekdayPicker
-              disabled={state.matches("ADDING")}
-              activeWeekdays={state.activeWeekdays}
-              onChange={actions.backlogItem.toggleActiveWeekday}
+          <SelectionContainer
+            onClick={() => {
+              actions.setSelection(CurrentSelection.NO_DUE_DATE);
+            }}
+          >
+            <SelectionButton
+              disabled={state.current === "ADDING"}
+              type="radio"
+              readOnly
+              checked={state.currentSelection === CurrentSelection.NO_DUE_DATE}
             />
-          </UserWeekdays>
-        </SelectionContainer>
-        <SelectionContainer
-          onClick={() => {
-            actions.backlogItem.setSelection(CurrentSelection.DATE);
-          }}
-        >
-          <SelectionButton
-            disabled={state.matches("ADDING")}
-            readOnly
-            type="radio"
-            checked={state.currentSelection === CurrentSelection.DATE}
-          />
-          <Calendar
-            disabled={state.matches("ADDING")}
-            date={state.date}
-            onChange={actions.backlogItem.setDate}
-          />
-        </SelectionContainer>
-      </Content>
-    </ScreenContainer>
-  );
+            No due date
+          </SelectionContainer>
+          <SelectionContainer
+            onClick={() => {
+              actions.setSelection(CurrentSelection.WEEKDAYS);
+            }}
+          >
+            <SelectionButton
+              disabled={state.current === "ADDING"}
+              type="radio"
+              readOnly
+              checked={state.currentSelection === CurrentSelection.WEEKDAYS}
+            />
+            <UserWeekdays>
+              <WeekdayPicker
+                color={stringToColor(rootState.profile.uid)}
+                disabled={state.current === "ADDING"}
+                activeWeekdays={state.activeWeekdays}
+                onChange={actions.toggleActiveWeekday}
+              />
+            </UserWeekdays>
+          </SelectionContainer>
+          <SelectionContainer
+            onClick={() => {
+              actions.setSelection(CurrentSelection.DATE);
+            }}
+          >
+            <SelectionButton
+              disabled={state.current === "ADDING"}
+              readOnly
+              type="radio"
+              checked={state.currentSelection === CurrentSelection.DATE}
+            />
+            <Calendar
+              disabled={state.current === "ADDING"}
+              date={state.date}
+              onChange={actions.setDate}
+            />
+          </SelectionContainer>
+        </Content>
+      </ScreenContainer>
+    );
+  }
+
+  return null;
 };

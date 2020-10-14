@@ -23,25 +23,29 @@ export const EditCurrentWeek: React.FC = () => {
   const state = useAppState();
   const actions = useActions();
 
-  return (
-    <Container>
-      <BackButton
-        onClick={() => {
-          actions.openScreen("HOME");
-        }}
-      >
-        <FaArrowLeft />
-      </BackButton>
-      <List>
-        {state.backlogList.map((backlogItem) => (
-          <BacklogItem
-            key={backlogItem.id}
-            id={backlogItem.id}
-            currentWeekDates={state.currentWeekDays}
-            previousWeekDates={state.previousWeekDays}
-          />
-        ))}
-      </List>
-    </Container>
-  );
+  if (state.current === "AUTHENTICATED") {
+    return (
+      <Container>
+        <BackButton
+          onClick={() => {
+            actions.openHome();
+          }}
+        >
+          <FaArrowLeft />
+        </BackButton>
+        <List>
+          {state.app.backlogList.map((backlogItem) => (
+            <BacklogItem
+              key={backlogItem.id}
+              id={backlogItem.id}
+              currentWeekDates={state.app.currentWeekDays}
+              previousWeekDates={state.app.previousWeekDays}
+            />
+          ))}
+        </List>
+      </Container>
+    );
+  }
+
+  return null;
 };

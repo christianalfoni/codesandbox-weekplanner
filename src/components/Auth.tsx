@@ -4,10 +4,10 @@ import { ScreenContainer } from "../ui-components/ScreenContainer";
 import { Error } from "../ui-components/Error";
 
 export const Auth: React.FC = () => {
-  const state = useAppState().auth;
-  const actions = useActions().auth;
+  const state = useAppState();
+  const actions = useActions();
 
-  if (state.matches("UNAUTHENTICATED")) {
+  if (state.current === "UNAUTHENTICATED") {
     return (
       <ScreenContainer>
         <div>

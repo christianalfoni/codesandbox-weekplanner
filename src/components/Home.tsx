@@ -36,9 +36,14 @@ const ContentRow = styled.div({
 
 const ContentCell = styled.div({
   display: "flex",
+  flexDirection: "column",
   flex: 1,
   alignItems: "center",
   justifyContent: "center"
+});
+
+const ContentText = styled.div({
+  padding: [2, 4]
 });
 
 const CalendarIcon = styled(FaCalendar, {
@@ -51,16 +56,24 @@ export const Home: React.FC = () => {
   return (
     <ScreenContainer>
       <Content>
-        <Logout onClick={() => actions.auth.signOut()}>Log out</Logout>
+        <Logout onClick={() => actions.signOut()}>Log out</Logout>
         <ContentRow
           onClick={() => {
-            actions.openScreen("EDIT_CURRENT_WEEK");
+            actions.openEditCurrentWeek();
           }}
         >
           <ContentCell>
             <CalendarIcon />
+            <ContentText>Current Week</ContentText>
           </ContentCell>
-          <ContentCell>hopp</ContentCell>
+          <ContentCell
+            onClick={() => {
+              actions.openEditNextWeek();
+            }}
+          >
+            <CalendarIcon />
+            <ContentText>Next Week</ContentText>
+          </ContentCell>
         </ContentRow>
         <ContentRow>
           <ContentCell>BLIP</ContentCell>
@@ -68,7 +81,7 @@ export const Home: React.FC = () => {
       </Content>
       <AddBacklogItemButton
         onClick={() => {
-          actions.openScreen("ADD_BACKLOG_ITEM");
+          actions.openAddBacklogItem();
         }}
       >
         <FaPlus />

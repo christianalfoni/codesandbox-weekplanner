@@ -4,7 +4,7 @@ import { styled } from "../css";
 type Props = {
   disabled?: boolean;
   activeWeekdays: number[];
-  previouslyActiveWeekDays: number[];
+  previouslyActiveWeekDays?: number[];
   weekdayMapping?: [number, number, number, number, number, number, number];
   onChange: (weekdayIndex: number) => void;
   color: string;
@@ -22,7 +22,7 @@ const WeekdayButton = styled.button({
 export const WeekdayPicker: React.FC<Props> = ({
   disabled,
   activeWeekdays,
-  previouslyActiveWeekDays,
+  previouslyActiveWeekDays = [],
   weekdayMapping = [1, 2, 3, 4, 5, 6, 0],
   onChange,
   color

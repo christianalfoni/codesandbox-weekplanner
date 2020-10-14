@@ -1,15 +1,15 @@
 import { styled } from "../css";
 
 export const Container = styled.div({
+  position: "relative",
   width: "100vw",
   maxWidth: "700px",
   marginLeft: "auto",
   marginRight: "auto",
-  padding: 5,
   boxSizing: "border-box",
-  position: "relative",
+  padding: 5,
   MOBILE: {
-    padding: 0,
-    maxWidth: "100%"
+    maxWidth: "100%",
+    padding: 0
   }
 });

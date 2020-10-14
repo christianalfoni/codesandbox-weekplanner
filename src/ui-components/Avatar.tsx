@@ -1,16 +1,16 @@
 import * as React from "react";
-import { styled } from "../css";
 import { getInitials } from "../overmind/utils";
+import { styled } from "../css";
 
-const AvatarCircle = styled.div({
+const AvatarElement = styled.div({
   borderRadius: "50%",
   borderSize: "thin",
   borderStyle: "solid",
-  padding: 1,
-  fontSize: 0,
   display: "flex",
+  justifyContent: "center",
   alignItems: "center",
-  justifyContent: "center"
+  fontSize: 0,
+  padding: 1
 });
 
 export const Avatar: React.FC<{ color: string; name: string }> = ({
@@ -18,8 +18,12 @@ export const Avatar: React.FC<{ color: string; name: string }> = ({
   name
 }) => {
   return (
-    <AvatarCircle style={{ borderColor: color }}>
+    <AvatarElement
+      style={{
+        borderColor: color
+      }}
+    >
       {getInitials(name)}
-    </AvatarCircle>
+    </AvatarElement>
   );
 };

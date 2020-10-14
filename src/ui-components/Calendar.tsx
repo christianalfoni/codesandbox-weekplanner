@@ -1,6 +1,12 @@
 import * as React from "react";
 import { styled } from "../css";
 
+const CalendarElement = styled.input({
+  width: "100%",
+  marginTop: 2,
+  marginBottom: 2
+});
+
 function getFormattedDate(date: Date) {
   let year = date.getFullYear();
   let month = (1 + date.getMonth()).toString().padStart(2, "0");
@@ -9,14 +15,8 @@ function getFormattedDate(date: Date) {
   return `${year}-${month}-${day}`;
 }
 
-const CalendarElement = styled.input({
-  width: "100%",
-  marginTop: 2,
-  marginBottom: 2
-});
-
 type Props = {
-  disabled?: boolean;
+  disabled: boolean;
   date: number;
   onChange: (date: number) => void;
 };
