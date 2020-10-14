@@ -1,24 +1,15 @@
-import { IConfig } from "overmind";
-import { merge, namespaced } from "overmind/config";
-import { state } from "./state";
+import { derived, IConfig } from "overmind";
 import * as effects from "./effects";
-import * as actions from "./actions";
 import { onInitialize } from "./onInitialize";
-import * as auth from "./auth";
-import * as backlogItem from "./backlogItem";
+import { createAuthMachine } from "./machines/auth";
+import * as actions from "./actions";
 
-export const config = merge(
-  {
-    onInitialize,
-    state,
-    effects,
-    actions
-  },
-  namespaced({
-    auth,
-    backlogItem
-  })
-);
+export const config = {
+  onInitialize,
+  effects,
+  state: createAuthMachine(),
+  actions
+};
 
 declare module "overmind" {
   interface Config extends IConfig<typeof config> {}

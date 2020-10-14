@@ -1,7 +1,7 @@
 import { User } from "firebase";
-import { BacklogItems, BacklogItem, DaysByBacklogItem } from "./state";
-import { Profile } from "./auth/state";
-import { getFirstDayOfPreviousWeek } from "./utils";
+import { BacklogItems, BacklogItem, DaysByBacklogItem } from "../state/app";
+import { Profile } from "../state";
+import { getFirstDayOfPreviousWeek } from "../utils";
 
 export const browser = {
   isIframe: () => window.self !== window.top
