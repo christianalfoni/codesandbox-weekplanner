@@ -7,9 +7,9 @@ export const Container = styled.div({
   marginLeft: "auto",
   marginRight: "auto",
   boxSizing: "border-box",
-  padding: 5,
+  padding: "$5",
   MOBILE: {
     maxWidth: "100%",
-    padding: 0
+    padding: "$0"
   }
 });

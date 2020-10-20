@@ -1,16 +1,13 @@
 import { Statemachine, statemachine } from "overmind";
 
-type States = (
+type States =
   | {
       current: "HIDE";
     }
   | {
       current: "SHOW";
       content: string;
-    }
-) & {
-  content?: string;
-};
+    };
 
 type Events =
   | {
@@ -24,11 +21,10 @@ type Events =
 export type NotificationMachine = Statemachine<States, Events>;
 
 export const notificationMachine = statemachine<States, Events>({
-  ADDED: (state, content) => {
-    state.content = content;
-    return "SHOW";
+  ADDED: (_, content) => {
+    return { current: "SHOW", content };
   },
-  EXPIRED: () => "HIDE"
+  EXPIRED: () => ({ current: "HIDE" })
 });
 
 export const createNotificationMachine = () => {

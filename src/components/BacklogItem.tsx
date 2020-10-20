@@ -9,21 +9,21 @@ import {
 import { WeekdayPicker } from "../ui-components/WeekdayPicker";
 import { Avatar } from "../ui-components/Avatar";
 const Card = styled.div({
-  marginTop: 3,
-  marginBottom: 3,
+  marginTop: "$3",
+  marginBottom: "$3",
   borderBottomStyle: "solid",
   borderBottomSize: 1,
   borderBottomColor: "gray"
 });
 
 const Description = styled.div({
-  marginBottom: 2
+  marginBottom: "$2"
 });
 
 const WeekdayPickerContainer = styled.div({
   display: "flex",
   width: "100%",
-  marginBottom: 3
+  marginBottom: "$3"
 });
 
 const Weekdays = styled.div({

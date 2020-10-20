@@ -1,5 +1,9 @@
 import * as React from "react";
 import { styled } from "../css";
+import {
+  DEFAULT_WEEKDAY_MAPPING,
+  WEEKDAY_NAMES_SHORT
+} from "../overmind/constants";
 
 type Props = {
   disabled?: boolean;
@@ -10,20 +14,18 @@ type Props = {
   color: string;
 };
 
-const weekdays = ["Su", "Mo", "Tu", "We", "Th", "Fr", "Sa"];
-
 const WeekdayButton = styled.button({
   borderStyle: "solid",
   borderSize: "thin",
-  borderRadius: 2,
-  padding: [1, 2, 1]
+  borderRadius: "$2",
+  padding: ["$1", "$2", "$1"]
 });
 
 export const WeekdayPicker: React.FC<Props> = ({
   disabled,
   activeWeekdays,
   previouslyActiveWeekDays = [],
-  weekdayMapping = [1, 2, 3, 4, 5, 6, 0],
+  weekdayMapping = DEFAULT_WEEKDAY_MAPPING,
   onChange,
   color
 }) => {
@@ -52,7 +54,7 @@ export const WeekdayPicker: React.FC<Props> = ({
                 }
           }
         >
-          {weekdays[weekdayIndex]}
+          {WEEKDAY_NAMES_SHORT[weekdayIndex]}
         </WeekdayButton>
       ))}
     </React.Fragment>

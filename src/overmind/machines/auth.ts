@@ -8,7 +8,7 @@ export type Profile = {
   familyUid?: string;
 };
 
-type States = (
+type States =
   | {
       current: "AUTHENTICATING";
     }
@@ -24,15 +24,12 @@ type States = (
     }
   | {
       current: "INVALID_ENV";
-    }
-) & {
+    };
+
+type BaseState = {
   profiles: {
     [uid: string]: string;
   };
-  app?: AppMachine;
-  user?: User;
-  profile?: Profile;
-  error?: string;
 };
 
 type Events =
@@ -54,18 +51,21 @@ type Events =
       type: "INVALID_ENV";
     };
 
-export type AuthMachine = Statemachine<States, Events>;
+export type AuthMachine = Statemachine<States, Events, BaseState>;
 
-export const authMachine = statemachine<States, Events>({
+export const authMachine = statemachine<States, Events, BaseState>({
   AUTHENTICATING: (state) => {
-    if (state.current === "UNAUTHENTICATED") return "AUTHENTICATING";
+    if (state.current === "UNAUTHENTICATED")
+      return { current: "AUTHENTICATING" };
   },
   AUTHENTICATED: (state, { user, profile }) => {
     if (state.current === "AUTHENTICATING") {
-      state.profile = profile;
-      state.user = user;
-      state.app = createAppMachine();
-      return "AUTHENTICATED";
+      return {
+        current: "AUTHENTICATED",
+        user,
+        profile,
+        app: createAppMachine()
+      };
     }
   },
   UNAUTHENTICATED: (state, reason) => {
@@ -73,26 +73,29 @@ export const authMachine = statemachine<States, Events>({
       state.current === "AUTHENTICATED" ||
       state.current === "AUTHENTICATING"
     ) {
-      state.error = reason;
-      return "UNAUTHENTICATED";
+      return { current: "UNAUTHENTICATED", reason };
     }
   },
-  INVALID_ENV: () => "INVALID_ENV"
+  INVALID_ENV: () => ({ current: "INVALID_ENV" })
 });
 
 export const createAuthMachine = () => {
-  return authMachine.create({
-    current: "AUTHENTICATING",
-    profiles: derived((state: AuthMachine) => {
-      const authState = state.matches("AUTHENTICATED");
+  return authMachine.create(
+    {
+      current: "AUTHENTICATING"
+    },
+    {
+      profiles: derived((state: AuthMachine) => {
+        const authState = state.matches("AUTHENTICATED");
 
-      if (authState) {
-        return {
-          [authState.profile.uid]: authState.profile.name
-        };
-      }
+        if (authState) {
+          return {
+            [authState.profile.uid]: authState.profile.name
+          };
+        }
 
-      return {};
-    })
-  });
+        return {};
+      })
+    }
+  );
 };

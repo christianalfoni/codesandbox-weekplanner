@@ -6,10 +6,9 @@ export enum CurrentSelection {
   DATE
 }
 
-type States = (
+type States =
   | {
       current: "INITIAL";
-      description: "";
     }
   | {
       current: "VALID";
@@ -20,8 +19,9 @@ type States = (
     }
   | {
       current: "ADDING";
-    }
-) & {
+    };
+
+type BaseState = {
   description: string;
   currentSelection: CurrentSelection;
   activeWeekdays: number[];
@@ -57,16 +57,16 @@ type Events =
       data: CurrentSelection;
     };
 
-export type AddBacklogItemMachine = Statemachine<States, Events>;
+export type AddBacklogItemMachine = Statemachine<States, Events, BaseState>;
 
-export const addBacklogItemMachine = statemachine<States, Events>({
+export const addBacklogItemMachine = statemachine<States, Events, BaseState>({
   ADDING: (state) => {
-    if (state.current === "VALID") return "ADDING";
+    if (state.current === "VALID") return { current: "ADDING" };
   },
   DESCRIPTION_CHANGED: (state, description) => {
     state.description = description;
 
-    return description ? "VALID" : "INITIAL";
+    return { current: description ? "VALID" : "INITIAL" };
   },
   ACTIVE_WEEKDAYS_CHANGED: ({ activeWeekdays }, weekday) => {
     if (activeWeekdays.includes(weekday)) {
@@ -80,15 +80,17 @@ export const addBacklogItemMachine = statemachine<States, Events>({
   },
   ADD_REJECTED: (state, error) => {
     if (state.current === "ADDING") {
-      state.error = error;
-
-      return "ERROR";
+      return { current: "ERROR", error };
     }
   },
   ADD_RESOLVED: (state) => {
-    state.activeWeekdays = [];
-    state.currentSelection = CurrentSelection.NO_DUE_DATE;
-    state.description = "";
+    if (state.current === "ADDING") {
+      state.activeWeekdays = [];
+      state.currentSelection = CurrentSelection.NO_DUE_DATE;
+      state.description = "";
+
+      return { current: "INITIAL" };
+    }
   },
   SELECTION_CHANGED: (state, selection) => {
     if (state.current !== "ADDING") {
@@ -98,11 +100,15 @@ export const addBacklogItemMachine = statemachine<States, Events>({
 });
 
 export const createAddBacklogItemMachine = () => {
-  return addBacklogItemMachine.create({
-    current: "INITIAL",
-    currentSelection: CurrentSelection.NO_DUE_DATE,
-    description: "",
-    activeWeekdays: [],
-    date: Date.now()
-  });
+  return addBacklogItemMachine.create(
+    {
+      current: "INITIAL"
+    },
+    {
+      currentSelection: CurrentSelection.NO_DUE_DATE,
+      description: "",
+      activeWeekdays: [],
+      date: Date.now()
+    }
+  );
 };

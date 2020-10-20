@@ -9,7 +9,7 @@ import { BacklogItem } from "./BacklogItem";
 const BackButton = styled(FloatingButton, {
   top: "1rem",
   left: "1rem",
-  color: "black",
+  color: "$black",
   backgroundColor: "transparent",
   border: "0",
   boxShadow: "none"

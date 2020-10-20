@@ -4,13 +4,15 @@ import { styled } from "../css";
 import { ScreenContainer } from "../ui-components/ScreenContainer";
 import { FloatingButton } from "../ui-components/FloatingButton";
 import { FaPlus, FaCalendar } from "react-icons/fa";
+import { CurrentWeek } from "./CurrentWeek";
 
 const AddBacklogItemButton = styled(FloatingButton, {
   bottom: "1rem",
   right: "1rem",
-  color: "white",
-  backgroundColor: "main",
-  borderColor: "black"
+  color: "$white",
+  backgroundColor: "$main",
+  borderColor: "$black",
+  zIndex: 2
 });
 
 const Logout = styled.button({
@@ -35,6 +37,7 @@ const ContentRow = styled.div({
 });
 
 const ContentCell = styled.div({
+  position: "relative",
   display: "flex",
   flexDirection: "column",
   flex: 1,
@@ -43,7 +46,7 @@ const ContentCell = styled.div({
 });
 
 const ContentText = styled.div({
-  padding: [2, 4]
+  padding: ["$2", "$4"]
 });
 
 const CalendarIcon = styled(FaCalendar, {
@@ -52,7 +55,6 @@ const CalendarIcon = styled(FaCalendar, {
 
 export const Home: React.FC = () => {
   const actions = useActions();
-
   return (
     <ScreenContainer>
       <Content>
@@ -76,7 +78,9 @@ export const Home: React.FC = () => {
           </ContentCell>
         </ContentRow>
         <ContentRow>
-          <ContentCell></ContentCell>
+          <ContentCell style={{ width: "100%" }}>
+            <CurrentWeek />
+          </ContentCell>
         </ContentRow>
       </Content>
       <AddBacklogItemButton

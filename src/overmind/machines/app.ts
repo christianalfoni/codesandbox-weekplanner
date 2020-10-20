@@ -38,7 +38,7 @@ export type DaysByBacklogItem = {
 
 export type BacklogItems = { [uid: string]: BacklogItem };
 
-type States = (
+type States =
   | {
       current: "HOME";
     }
@@ -51,8 +51,9 @@ type States = (
     }
   | {
       current: "EDIT_CURRENT_WEEK";
-    }
-) & {
+    };
+
+type BaseState = {
   backlog: BacklogItems;
   days: DaysByBacklogItem;
   backlogList: BacklogItem[];
@@ -85,21 +86,23 @@ type Events =
       data: DaysByBacklogItem;
     };
 
-export type AppMachine = Statemachine<States, Events>;
+export type AppMachine = Statemachine<States, Events, BaseState>;
 
-export const appMachine = statemachine<States, Events>({
-  HOME_NAVIGATED: () => "HOME",
+export const appMachine = statemachine<States, Events, BaseState>({
+  HOME_NAVIGATED: () => ({ current: "HOME" }),
   ADD_BACKLOG_ITEM_NAVIGATED: (state) => {
     if (state.current === "HOME") {
-      state.addBacklogItem = createAddBacklogItemMachine();
-      return "ADD_BACKLOG_ITEM";
+      return {
+        current: "ADD_BACKLOG_ITEM",
+        addBacklogItem: createAddBacklogItemMachine()
+      };
     }
   },
   EDIT_NEXT_WEEK_NAVIGATED: (state) => {
-    if (state.current === "HOME") return "EDIT_NEXT_WEEK";
+    if (state.current === "HOME") return { current: "EDIT_NEXT_WEEK" };
   },
   EDIT_CURRENT_WEEK_NAVIGATED: (state) => {
-    if (state.current === "HOME") return "EDIT_CURRENT_WEEK";
+    if (state.current === "HOME") return { current: "EDIT_CURRENT_WEEK" };
   },
   BACKLOG_UPDATED: (state, update) => {
     Object.assign(state.backlog, update);
@@ -110,16 +113,20 @@ export const appMachine = statemachine<States, Events>({
 });
 
 export const createAppMachine = () => {
-  return appMachine.create({
-    current: "HOME",
-    backlog: {},
-    days: {},
-    notification: createNotificationMachine(),
-    backlogList: derived((state: AppMachine) => {
-      return Object.values(state.backlog);
-    }),
-    previousWeekDays: getDaysOfPreviousWeek(),
-    currentWeekDays: getDaysOfCurrentWeek(),
-    nextWeekDays: getDaysOfNextWeek()
-  });
+  return appMachine.create(
+    {
+      current: "HOME"
+    },
+    {
+      backlog: {},
+      days: {},
+      notification: createNotificationMachine(),
+      backlogList: derived((state: AppMachine) => {
+        return Object.values(state.backlog);
+      }),
+      previousWeekDays: getDaysOfPreviousWeek(),
+      currentWeekDays: getDaysOfCurrentWeek(),
+      nextWeekDays: getDaysOfNextWeek()
+    }
+  );
 };

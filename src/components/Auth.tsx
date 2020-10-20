@@ -11,7 +11,7 @@ export const Auth: React.FC = () => {
     return (
       <ScreenContainer>
         <div>
-          {state.error ? <Error>{state.error}</Error> : null}
+          {state.reason ? <Error>{state.reason}</Error> : null}
           <button onClick={() => actions.signIn()}>
             Log in for an awesome experience
           </button>

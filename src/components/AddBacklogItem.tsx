@@ -12,7 +12,7 @@ import { stringToColor } from "../overmind/utils";
 const BackButton = styled(FloatingButton, {
   top: "1rem",
   left: "1rem",
-  color: "black",
+  color: "$black",
   backgroundColor: "transparent",
   border: "0",
   boxShadow: "none"
@@ -21,25 +21,25 @@ const BackButton = styled(FloatingButton, {
 const AddButton = styled(FloatingButton, {
   top: "1rem",
   right: "1rem",
-  backgroundColor: "main",
-  borderColor: "black",
-  color: "white"
+  backgroundColor: "$main",
+  borderColor: "$black",
+  color: "$white"
 });
 
 const TextArea = styled.textarea({
   resize: "none",
-  height: 5,
+  height: "$5",
   width: "100%"
 });
 
 const Content = styled.div({
-  padding: 6,
+  padding: "$6",
   flex: 1,
   display: "flex",
   flexDirection: "column",
   justifyContent: "stretch",
   MOBILE: {
-    padding: 3
+    padding: "$3"
   }
 });
 
@@ -47,19 +47,19 @@ const UserWeekdays = styled.div({
   display: "flex",
   flex: 1,
   justifyContent: "space-between",
-  marginTop: 2,
-  marginBottom: 2
+  marginTop: "$2",
+  marginBottom: "$2"
 });
 
 const SelectionContainer = styled.div({
   display: "flex",
   alignItems: "center",
-  marginBottom: 3,
-  marginTop: 3
+  marginBottom: "$3",
+  marginTop: "$3"
 });
 
 const SelectionButton = styled.input({
-  margin: [2, 3, 2]
+  margin: ["$2", "$3", "$2"]
 });
 
 export const AddBacklogItem: React.FC = () => {

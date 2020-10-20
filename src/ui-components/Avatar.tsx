@@ -9,8 +9,8 @@ const AvatarElement = styled.div({
   display: "flex",
   justifyContent: "center",
   alignItems: "center",
-  fontSize: 0,
-  padding: 1
+  fontSize: "$0",
+  padding: "$1"
 });
 
 export const Avatar: React.FC<{ color: string; name: string }> = ({

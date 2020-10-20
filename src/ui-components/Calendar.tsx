@@ -3,8 +3,8 @@ import { styled } from "../css";
 
 const CalendarElement = styled.input({
   width: "100%",
-  marginTop: 2,
-  marginBottom: 2
+  marginTop: "$2",
+  marginBottom: "$2"
 });
 
 function getFormattedDate(date: Date) {
