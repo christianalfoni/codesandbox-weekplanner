@@ -36,6 +36,15 @@ export type DaysByBacklogItem = {
   };
 };
 
+export type BacklogItemsByDay = {
+  [dayId: string]: [
+    {
+      profileUid: string;
+      backlogItemId: string;
+    }
+  ];
+};
+
 export type BacklogItems = { [uid: string]: BacklogItem };
 
 type States =
@@ -62,6 +71,7 @@ type BaseState = {
   currentWeekDays: string[];
   nextWeekDays: string[];
   addBacklogItem?: AddBacklogItemMachine;
+  backlogItemsByDay: BacklogItemsByDay;
 };
 
 type Events =
@@ -126,7 +136,24 @@ export const createAppMachine = () => {
       }),
       previousWeekDays: getDaysOfPreviousWeek(),
       currentWeekDays: getDaysOfCurrentWeek(),
-      nextWeekDays: getDaysOfNextWeek()
+      nextWeekDays: getDaysOfNextWeek(),
+      backlogItemsByDay: derived((state: AppMachine) => {
+        const itemsByWeekDay: BacklogItemsByDay = {};
+
+        Object.keys(state.days).forEach((backlogItemId) => {
+          Object.keys(state.days[backlogItemId]).forEach((profileUid) => {
+            state.days[backlogItemId][profileUid].forEach((dayId) => {
+              if (!itemsByWeekDay[dayId]) {
+                itemsByWeekDay[dayId] = [] as any;
+              }
+
+              itemsByWeekDay[dayId].push({ profileUid, backlogItemId });
+            });
+          });
+        });
+
+        return itemsByWeekDay;
+      })
     }
   );
 };

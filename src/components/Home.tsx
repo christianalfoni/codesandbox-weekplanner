@@ -31,9 +31,14 @@ const Content = styled.div({
   width: "100%"
 });
 
-const ContentRow = styled.div({
+const MainContentRow = styled.div({
   display: "flex",
   flex: 1
+});
+
+const SliderContent = styled.div({
+  display: "flex",
+  flex: "4"
 });
 
 const ContentCell = styled.div({
@@ -46,7 +51,7 @@ const ContentCell = styled.div({
 });
 
 const ContentText = styled.div({
-  padding: ["$2", "$4"]
+  paddingTop: "$2"
 });
 
 const CalendarIcon = styled(FaCalendar, {
@@ -59,7 +64,7 @@ export const Home: React.FC = () => {
     <ScreenContainer>
       <Content>
         <Logout onClick={() => actions.signOut()}>Log out</Logout>
-        <ContentRow
+        <MainContentRow
           onClick={() => {
             actions.openEditCurrentWeek();
           }}
@@ -76,20 +81,20 @@ export const Home: React.FC = () => {
             <CalendarIcon />
             <ContentText>Next Week</ContentText>
           </ContentCell>
-        </ContentRow>
-        <ContentRow>
+        </MainContentRow>
+        <SliderContent>
           <ContentCell style={{ width: "100%" }}>
             <CurrentWeek />
           </ContentCell>
-        </ContentRow>
+        </SliderContent>
+        <AddBacklogItemButton
+          onClick={() => {
+            actions.openAddBacklogItem();
+          }}
+        >
+          <FaPlus />
+        </AddBacklogItemButton>
       </Content>
-      <AddBacklogItemButton
-        onClick={() => {
-          actions.openAddBacklogItem();
-        }}
-      >
-        <FaPlus />
-      </AddBacklogItemButton>
     </ScreenContainer>
   );
 };

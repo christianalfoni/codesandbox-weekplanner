@@ -46,21 +46,20 @@ const Slides = styled.div({
   transition: "left 0.25s ease-in"
 });
 
-const SlideWrapper = styled.div({
-  display: "inline-block",
-  width: "100%",
-  padding: "0 40px",
-  boxSizing: "border-box"
-});
-
-export const Slider = ({ children }: { children: any }) => {
+export const Slider = ({
+  initialSlideIndex,
+  children
+}: {
+  children: any;
+  initialSlideIndex: number;
+}) => {
   const ref = React.useRef<HTMLDivElement>(null);
-  const [slideIndex, setSlideIndex] = React.useState(0);
+  const [slideIndex, setSlideIndex] = React.useState(initialSlideIndex);
 
   React.useEffect(() => {
     if (ref.current) {
       var mc = new Hammer(ref.current);
-      mc.on("swipeleft swiperight", function (ev) {
+      mc.on("swipe", function (ev) {
         if (ev.direction === 4) {
           setSlideIndex((current) => (current > 0 ? current - 1 : current));
         } else if (ev.direction === 2) {
@@ -69,9 +68,14 @@ export const Slider = ({ children }: { children: any }) => {
           );
         }
       });
+
+      return () => {
+        mc.destroy();
+      };
     }
   }, [ref, children]);
 
+  console.log("slideIndex", slideIndex);
   return (
     <Wrapper ref={ref}>
       <LeftBoundary />
@@ -88,6 +92,15 @@ export const Slider = ({ children }: { children: any }) => {
     </Wrapper>
   );
 };
+
+const SlideWrapper = styled.div({
+  display: "inline-block",
+  width: "100%",
+  height: "100%",
+  padding: "0 40px",
+  boxSizing: "border-box",
+  verticalAlign: "top"
+});
 
 Slider.Slide = ({ children }: { children: any }) => {
   return <SlideWrapper>{children}</SlideWrapper>;

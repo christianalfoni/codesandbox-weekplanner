@@ -61,7 +61,7 @@ export const BacklogItem: React.FC<{
 
           return (
             <WeekdayPickerContainer key={uid}>
-              <Avatar color={color} name={name} />
+              <Avatar>{name}</Avatar>
               <Weekdays>
                 <WeekdayPicker
                   activeWeekdays={activeWeekDays}

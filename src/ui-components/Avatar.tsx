@@ -1,5 +1,5 @@
 import * as React from "react";
-import { getInitials } from "../overmind/utils";
+import { getInitials, stringToColor } from "../overmind/utils";
 import { styled } from "../css";
 
 const AvatarElement = styled.div({
@@ -13,17 +13,14 @@ const AvatarElement = styled.div({
   padding: "$1"
 });
 
-export const Avatar: React.FC<{ color: string; name: string }> = ({
-  color,
-  name
-}) => {
+export const Avatar = ({ children }: { children: string }) => {
   return (
     <AvatarElement
       style={{
-        borderColor: color
+        borderColor: stringToColor(children)
       }}
     >
-      {getInitials(name)}
+      {getInitials(children)}
     </AvatarElement>
   );
 };
